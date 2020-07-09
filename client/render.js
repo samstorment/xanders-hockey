@@ -1,8 +1,10 @@
 import { getKey } from './keyboard.js';
-const socket = io();
+export const socket = io();
 
 let canvas = document.querySelector('#canvas');
 let context = canvas.getContext('2d');
+canvas.width = 500;
+canvas.height = 500;
 context.font = '30px Arial';
 
 

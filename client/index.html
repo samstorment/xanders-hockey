@@ -5,10 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-    <script defer src="socket.js" type="module"></script>
+    <script defer src="chat.js" type="module"></script>
+    <script defer src="render.js" type="module"></script>
     <title>Hockey</title>
 </head>
 <body>
-    <canvas id="canvas" class="canvas" width="500" height="500"></canvas>
+    <div id="container">
+        <!-- drawing canvas -->
+        <canvas id="canvas" class="canvas" width="500" height="500"></canvas>
+
+        <!-- chat area -->
+        <div id="chat-container">
+            <div id="messages-container">
+                <div class="message-row" id="welcome">Welcome to the chat. Isn't it cool here??</div>
+            </div>
+            <form id="input-form" autocomplete="off">
+                <input type="text" id="chat-input">
+                <button id="send-button">Send</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

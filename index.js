@@ -35,6 +35,13 @@ io.on('connect', socket => {
     // connect the player to the socket
     Player.connect(socket);
 
+    // when the server recieves a chat message, emit that message back to ALL other users
+    socket.on('sendChatMessage', message => {
+        for (let sid in socketList) {
+            socketList[sid].emit('addChatMessage', `${socket.id}: ${message}`);
+        }
+    });
+
     // when a user disconnects, remove their socket id and disconnect them
     socket.on('disconnect', () => {
         delete socketList[socket.id];

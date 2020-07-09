@@ -3,6 +3,73 @@
     margin: 0;
 }
 
+html, body {
+    background-color: rgb(238, 238, 238);
+}
+
+#container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
 .canvas {
-    border: 1px solid red;
+    border: 1px solid rgb(70, 70, 70);
+    background-color: powderblue;
+}
+
+#chat-container {
+    border: 1px solid rgb(88, 88, 88);
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: 500px;
+    margin-left: 50px;
+    background-color: powderblue;
+}
+
+#messages-container {
+    flex: 1;
+    overflow-y: scroll;
+}
+
+.message-row {
+    padding: 5px;
+    margin: 3px 0px;
+    background-color: rgb(72, 228, 220);
+}
+
+#welcome {
+    background-color: rgb(66, 214, 66);
+}
+
+#input-form {
+    display: flex;
+    margin-top: auto;
+    margin-bottom: 3px;
+}
+
+#chat-input {
+    height: 35px;
+    width: 100%;
+    padding-left: 5px;
+    margin-left: 3px;
+}
+
+#send-button {
+    width: 80px;
+    border: 1px solid blue;
+    border-radius: 5px;
+    margin: 0px 3px;
+    background-color: rgb(71, 71, 224);
+    color: white;
+}
+
+#send-button:active {
+    box-shadow: black inset 0px 0px 3px;
+}
+
+#send-button:hover {
+    background-color: rgb(92, 101, 240);
 }
