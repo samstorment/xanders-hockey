@@ -1,5 +1,6 @@
 import { getKey } from './keyboard.js';
 export const socket = io();
+export let myId = -1;
 
 let canvas = document.querySelector('#canvas');
 let context = canvas.getContext('2d');
@@ -11,6 +12,10 @@ context.font = '30px Arial';
 // just print the to the browser console on successful connection
 socket.on('connect', () => {
     console.log('Client socket connected');
+});
+
+socket.on('getId', id => {
+    myId = id;
 });
 
 // do this when the server tells us the position changed

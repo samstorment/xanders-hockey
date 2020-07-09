@@ -35,10 +35,14 @@ io.on('connect', socket => {
     // connect the player to the socket
     Player.connect(socket);
 
+    // tell the client their id
+    socket.emit('getId', socket.id);
+
     // when the server recieves a chat message, emit that message back to ALL other users
     socket.on('sendChatMessage', message => {
         for (let sid in socketList) {
-            socketList[sid].emit('addChatMessage', `${socket.id}: ${message}`);
+            let messageText = `${socket.id}: ${message}`;
+            socketList[sid].emit('addChatMessage', { message: messageText, id: socket.id });
         }
     });
 
@@ -47,6 +51,7 @@ io.on('connect', socket => {
         delete socketList[socket.id];
         Player.disconnect(socket);
     });
+
 });
 
 // this function gets called every 1000 / 60 milliseconds. This is 60 frames per second. This is how often we send the client update info.

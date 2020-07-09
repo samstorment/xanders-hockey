@@ -40,10 +40,6 @@ html, body {
     background-color: rgb(72, 228, 220);
 }
 
-#welcome {
-    background-color: rgb(66, 214, 66);
-}
-
 #input-form {
     display: flex;
     margin-top: auto;
