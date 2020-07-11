@@ -26,7 +26,10 @@ socket.on('addChatMessage', data => {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 });
 
-
+// when we receive evaluated data, print it to the console
+socket.on('evaluate', data => {
+    console.log(data);
+});
 
 // do this when the user sends a chat message
 inputForm.onsubmit = event => {
@@ -34,7 +37,13 @@ inputForm.onsubmit = event => {
     // prevent default - this prevents page from refreshing on form submission
     event.preventDefault();
 
-    // send the input text to the server then clear the input box
-    socket.emit('sendChatMessage', chatInput.value);
+    // if the first character is a slash, we want to do some server debug evaluation
+    if (chatInput.value[0] === '/') {
+        socket.emit('evaluate', chatInput.value.slice(1));
+    } else {
+        // send the input text to the server then clear the input box
+        socket.emit('sendChatMessage', chatInput.value);
+    }
+
     chatInput.value = '';
 };

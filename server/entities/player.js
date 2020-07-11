@@ -1,27 +1,26 @@
-// we should probably make some entity super class since most on screen object we create will need similiar attributes like position, id, maxspeed, etc.
-class Player {
+const Entity = require('./entity.js');
+const Bullet = require('./bullet.js');
+
+class Player extends Entity {
 
     // stores all players currently in the game. STATIC methods/variables can be accessed without instantiation
     static list = {};
 
-    // any player that just connects gets placed at position (0, 0)
+    // any player that just connects gets placed at position (30, 30)
     constructor(id) {
+        super();
         this.id = id;
         this.x = 30;
         this.y = 30;
-        this.maxSpeed = 10;
+        this.maxSpeed = 8;
         this.setControls();
         Player.list[id] = this;    // insert the currently created player into the list of all players
     }
 
-    // look at each control, if that control is held down, call the move method for that control
-    updatePosition() {
-        for (let i in this.controls) {
-            // if the control is down and has a move function defined
-            if (this.controls[i].isDown && this.controls[i].move) {
-                this.controls[i].move();
-            }
-        }
+    shoot(angle) {
+        let bullet = new Bullet(angle);
+        bullet.x = this.x;
+        bullet.y = this.y;
     }
 
     // This is where we define the keys that do something. Be sure that these are valid event.key names
@@ -29,19 +28,35 @@ class Player {
         this.controls = {
             ArrowLeft : {
                 isDown: false,
-                move: () => this.x -= this.maxSpeed
+                press: () => this.speedX = -1 * this.maxSpeed,
+                release: () => {
+                    this.speedX = 0;
+                    if (this.controls.ArrowRight.isDown) { this.controls.ArrowRight.press(); }
+                }
             },
             ArrowRight : {
                 isDown: false,
-                move: () => this.x += this.maxSpeed
+                press: () => this.speedX = this.maxSpeed,
+                release: () => {
+                    this.speedX = 0;
+                    if (this.controls.ArrowLeft.isDown) { this.controls.ArrowLeft.press(); }
+                }
             }, 
             ArrowUp : {
                 isDown: false,
-                move: () => this.y -= this.maxSpeed
+                press: () => this.speedY = -1 * this.maxSpeed,
+                release: () => {
+                    this.speedY = 0;
+                    if (this.controls.ArrowDown.isDown) { this.controls.ArrowDown.press(); }
+                }
             }, 
             ArrowDown : {
                 isDown: false,
-                move: () => this.y += this.maxSpeed
+                press: () => this.speedY = this.maxSpeed,
+                release: () => {
+                    this.speedY = 0;
+                    if (this.controls.ArrowUp.isDown) { this.controls.ArrowUp.press(); }
+                }
             }
         }
     }
@@ -66,14 +81,27 @@ class Player {
         // tell the client the list of controls that we need to listen for
         socket.emit('setControls', player.getControls());
 
+        // tell the client their id
+        socket.emit('getId', socket.id);
+
         // when client emits keyPressed, set the specific player key to down
         socket.on('keyPressed', key => {
             player.controls[key].isDown = true;
+            player.controls[key].press();
         });
         
         // when client emits keyReleased, set the specific player key to not down 
         socket.on('keyReleased', key => {
             player.controls[key].isDown = false;
+            player.controls[key].release();
+        });
+
+        // when the client emits shoot, we find the angle to shoot at - doesn'w work perfectly
+        socket.on('shoot', mouse => {
+            let x = -1 * player.x + mouse.x;
+            let y = -1 * player.y + mouse.y;
+            let angle = Math.atan2(y, x) / Math.PI * 180;
+            player.shoot(angle);
         });
     }
 
