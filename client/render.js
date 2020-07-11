@@ -1,4 +1,5 @@
-import { getKey } from './keyboard.js';
+import { getKey } from './utils.js';
+import { getMouse } from './utils.js';
 export const socket = io();
 export let myId = -1;
 
@@ -63,8 +64,9 @@ socket.on('setControls', controls => {
 
 
 canvas.addEventListener('click', event => {
+    let { mouseX, mouseY } = getMouse(event, canvas);
     socket.emit('shoot', { 
-        x: event.x,
-        y: event.y
+        x: mouseX,
+        y: mouseY
     });
 });

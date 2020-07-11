@@ -41,3 +41,29 @@ export function getKey(value) {
 
     return key;
 }
+
+export function getMouse(event, element) {
+
+    // Get the canvas X and Y coordinates so we knwow where to draw
+    let { x, y } = getElementPosition(element);
+
+    return {
+        mouseX: event.clientX - x,   
+        mouseY: event.clientY - y
+    };
+}
+
+function getElementPosition(element) {
+    var xPosition = 0;
+    var yPosition = 0;
+    
+    while (element) {
+        xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+        yPosition += (element.offsetTop - element.scrollTop + element.clientTop);
+        element = element.offsetParent;
+    }
+    return {
+        x: xPosition,
+        y: yPosition
+    };
+}
