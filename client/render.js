@@ -64,24 +64,16 @@ socket.on('setControls', controls => {
 
 
 let shooting = false;
+let currentX = 0;
+let currentY = 0;
 canvas.addEventListener('mousedown', event => {
-    let { mouseX, mouseY } = getMouse(event, canvas);
     shooting = true;
-    socket.emit('shoot', { 
-        x: mouseX,
-        y: mouseY,
-        shooting: true
-    });
+    shoot(event);
 });
 
 canvas.addEventListener('mousemove', event => {
-    let { mouseX, mouseY } = getMouse(event, canvas);
     if (shooting) {
-        socket.emit('shoot', { 
-            x: mouseX,
-            y: mouseY,
-            shooting: true
-        });
+        shoot(event);
     }
 });
 
@@ -89,3 +81,14 @@ canvas.addEventListener('mouseup', () => {
     shooting = false;
     socket.emit('shoot', {shooting: false});
 });
+
+function shoot(event) {
+    let { mouseX, mouseY } = getMouse(event, canvas);
+    currentX = mouseX;
+    currentY = mouseY;
+    socket.emit('shoot', { 
+        x: mouseX,
+        y: mouseY,
+        shooting: true
+    });
+}

@@ -33,36 +33,36 @@ class Player extends Entity {
     // This is where we define the keys that do something. Be sure that these are valid event.key names
     setControls() {
         this.controls = {
-            ArrowLeft : {
+            a : {
                 isDown: false,
                 press: () => this.speedX = -1 * this.maxSpeed,
                 release: () => {
                     this.speedX = 0;
-                    if (this.controls.ArrowRight.isDown) { this.controls.ArrowRight.press(); }
+                    if (this.controls.d.isDown) { this.controls.d.press(); }
                 }
             },
-            ArrowRight : {
+            d : {
                 isDown: false,
                 press: () => this.speedX = this.maxSpeed,
                 release: () => {
                     this.speedX = 0;
-                    if (this.controls.ArrowLeft.isDown) { this.controls.ArrowLeft.press(); }
+                    if (this.controls.a.isDown) { this.controls.a.press(); }
                 }
             }, 
-            ArrowUp : {
+            w : {
                 isDown: false,
                 press: () => this.speedY = -1 * this.maxSpeed,
                 release: () => {
                     this.speedY = 0;
-                    if (this.controls.ArrowDown.isDown) { this.controls.ArrowDown.press(); }
+                    if (this.controls.s.isDown) { this.controls.s.press(); }
                 }
             }, 
-            ArrowDown : {
+            s : {
                 isDown: false,
                 press: () => this.speedY = this.maxSpeed,
                 release: () => {
                     this.speedY = 0;
-                    if (this.controls.ArrowUp.isDown) { this.controls.ArrowUp.press(); }
+                    if (this.controls.w.isDown) { this.controls.w.press(); }
                 }
             }
         }

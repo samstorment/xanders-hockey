@@ -15,6 +15,7 @@ export function getKey(value) {
         if (event.key === key.value && key.isUp) {
             key.isDown = true;
             key.isUp = false;
+            key.event = event;
             // If the key.press function is defined, call it. 
             // Putting this function here ensures that press only gets called once on the initial key press
             if (key.press) { key.press(); }
@@ -25,6 +26,7 @@ export function getKey(value) {
         if (event.key === key.value && key.isDown) {
             key.isDown = false;
             key.isUp = true;
+            key.event = event;
             if (key.release) { key.release(); }
         }
     };
