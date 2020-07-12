@@ -19,7 +19,7 @@ class Bullet extends Entity {
     // update the bullet's position and remove the first bullet in the list after a while
     updatePosition() {
         super.updatePosition();
-        if (this.timer++ > 500) {
+        if (this.timer++ > 100) {
             Bullet.list.shift();
         }
     }

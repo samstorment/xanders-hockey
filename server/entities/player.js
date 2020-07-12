@@ -17,10 +17,17 @@ class Player extends Entity {
         Player.list[id] = this;    // insert the currently created player into the list of all players
     }
 
-    shoot(angle) {
-        let bullet = new Bullet(angle);
-        bullet.x = this.x;
-        bullet.y = this.y;
+    updatePosition() {
+        super.updatePosition();
+        this.shoot();
+    }
+
+    shoot() {
+        if (this.shooting) {
+            let bullet = new Bullet(this.shotAngle);
+            bullet.x = this.x;
+            bullet.y = this.y;
+        }
     }
 
     // This is where we define the keys that do something. Be sure that these are valid event.key names
@@ -98,10 +105,12 @@ class Player extends Entity {
 
         // when the client emits shoot, we find the angle to shoot at - doesn'w work perfectly
         socket.on('shoot', mouse => {
-            let x = -1 * player.x + mouse.x;
-            let y = -1 * player.y + mouse.y;
-            let angle = Math.atan2(y, x) / Math.PI * 180;
-            player.shoot(angle);
+            player.shooting = mouse.shooting;
+            if (mouse.shooting) {
+                let x = -1 * player.x + mouse.x;
+                let y = -1 * player.y + mouse.y;
+                player.shotAngle = Math.atan2(y, x) / Math.PI * 180;
+            }
         });
     }
 
