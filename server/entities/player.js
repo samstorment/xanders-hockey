@@ -14,6 +14,7 @@ class Player extends Entity {
         this.y = 30;
         this.maxSpeed = 8;
         this.setControls();
+        this.username = '';
         Player.list[id] = this;    // insert the currently created player into the list of all players
     }
 
@@ -24,7 +25,7 @@ class Player extends Entity {
 
     shoot() {
         if (this.shooting) {
-            let bullet = new Bullet(this.shotAngle);
+            let bullet = new Bullet(this, this.shotAngle);
             bullet.x = this.x;
             bullet.y = this.y;
         }
@@ -112,6 +113,8 @@ class Player extends Entity {
                 player.shotAngle = Math.atan2(y, x) / Math.PI * 180;
             }
         });
+
+        return player;
     }
 
     // delete the player with the corresponding socket id when they dc
@@ -137,6 +140,7 @@ class Player extends Entity {
             // add the current player's data thta we want to send the client
             data.push({
                 id: player.id,
+                username: player.username,
                 x: player.x,
                 y: player.y
             });

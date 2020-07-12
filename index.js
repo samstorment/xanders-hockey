@@ -34,19 +34,30 @@ io.on('connect', socket => {
     socketList[socket.id] = socket;
 
     // connect the player to the socket
-    Player.connect(socket);
+    let player = Player.connect(socket);
+
+    socket.on('join', username => {
+        player.username = username;
+    });
 
     // when the server recieves a chat message, emit that message back to ALL other users
     socket.on('sendChatMessage', message => {
         for (let sid in socketList) {
-            let messageText = `${socket.id}: ${message}`;
+            let messageText = `${Player.list[socket.id].username}: ${message}`;
             socketList[sid].emit('addChatMessage', { message: messageText, id: socket.id });
         }
     });
 
     // when the client asks for some debug evaluation
     socket.on('evaluate', message => {
-        let evalResponse = eval(message);
+        let evalResponse; 
+        try {
+            evalResponse = eval(message); 
+        } catch (e) {
+            if (e instanceof SyntaxError) {
+                evalResponse = e.message;
+            }
+        }
         socket.emit('evaluate', evalResponse);
     });
 

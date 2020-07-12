@@ -5,12 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let myId = -1; 
+    </script>
     <script defer src="chat.js" type="module"></script>
     <script defer src="render.js" type="module"></script>
     <title>Hockey</title>
 </head>
 <body>
-    <div id="container">
+
+    <div id="join-container">
+        <label for="username">Username</label>
+        <input type="text" id="username">
+        <button id="join-button">Join</button>
+    </div>
+
+
+    <div id="game-container">
         <!-- drawing canvas -->
         <canvas id="canvas" class="canvas" width="500" height="500"></canvas>
 

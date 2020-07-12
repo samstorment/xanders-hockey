@@ -1,5 +1,3 @@
-import { socket, myId } from './render.js';
-
 // get the chat elements we need
 let messagesContainer = document.querySelector('#messages-container');
 let inputForm = document.querySelector('#input-form');

@@ -5,8 +5,9 @@ class Bullet extends Entity {
     static list = [];
     static id = 0;
 
-    constructor(angle) {
+    constructor(parent, angle) {
         super();
+        this.parent = parent;
         this.id = Bullet.id++;
         this.x = 250;
         this.y = 250;
@@ -35,6 +36,7 @@ class Bullet extends Entity {
 
             // add the new position to the data package we'll send to the client
             data.push({
+                parent: bullet.parent,
                 id: bullet.id,
                 x: bullet.x,
                 y: bullet.y
