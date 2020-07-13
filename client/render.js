@@ -50,9 +50,10 @@ socket.on('draw', data => {
     context.fillRect(clientPlayer.x, clientPlayer.y, clientPlayer.w, clientPlayer.h);
     context.fillText(clientPlayer.username, clientPlayer.x, clientPlayer.y);
 
-    context.fillStyle = 'yellow';
+    
     // draw all the bullets
     for (let i = 0; i < data.bullets.length; i++) {
+        context.fillStyle = data.bullets[i].color;
         context.fillRect(data.bullets[i].x, data.bullets[i].y, data.bullets[i].w, data.bullets[i].h);
     }
 });
