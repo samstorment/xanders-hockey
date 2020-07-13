@@ -1,4 +1,6 @@
 const Entity = require('./entity.js');
+const Rectangle = require('../shapes/rectangle.js');
+const checkCollision = require('../collision/collision.js');
 
 class Bullet extends Entity {
     
@@ -9,17 +11,18 @@ class Bullet extends Entity {
         super();
         this.parent = parent;
         this.id = Bullet.id++;
-        this.x = 250;
-        this.y = 250;
         this.speedX = Math.cos(angle/180*Math.PI) * 10;
         this.speedY = Math.sin(angle/180*Math.PI) * 10;
         this.timer = 0;
-        Bullet.list.push(this);
+        this.hitbox = new Rectangle(0, 0, 5, 5);
+        Bullet.list.push(this);   
     }
 
     // update the bullet's position and remove the first bullet in the list after a while
     updatePosition() {
         super.updatePosition();
+        this.hitbox.x = this.x;
+        this.hitbox.y = this.y;
         if (this.timer++ > 100) {
             Bullet.list.shift();
         }
@@ -34,12 +37,27 @@ class Bullet extends Entity {
             let bullet = Bullet.list[b];
             bullet.updatePosition();
 
+            // for every bullet, loop through the list of all players and check to see if the bullet is colliding with a player
+            let plist = bullet.playerList;
+            for (let p in plist) {
+                // make sure the colliding player is not the parent player
+                if (checkCollision(bullet, plist[p]) && plist[p].id !== bullet.parent.id) {
+                    bullet.hitbox.w = 20;
+                    bullet.hitbox.h = 20;
+                } else {
+                    bullet.hitbox.w = 5;
+                    bullet.hitbox.h = 5;
+                }
+            }
+
             // add the new position to the data package we'll send to the client
             data.push({
                 parent: bullet.parent,
                 id: bullet.id,
-                x: bullet.x,
-                y: bullet.y
+                x: bullet.hitbox.x,
+                y: bullet.hitbox.y,
+                w: bullet.hitbox.w,
+                h: bullet.hitbox.h
             });
         }
         return data;

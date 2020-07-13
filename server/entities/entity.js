@@ -1,11 +1,12 @@
 class Entity {
 
-    constructor() {
+    constructor(x=0, y=0) {
         this.id = 0;
-        this.x = 0;
-        this.y = 0;
+        this.x = x;
+        this.y = y;
         this.speedX = 0;
         this.speedY = 0;
+        this.hitbox = undefined;
     }
 
     updatePosition() {

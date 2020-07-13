@@ -34,11 +34,7 @@ io.on('connect', socket => {
     socketList[socket.id] = socket;
 
     // connect the player to the socket
-    let player = Player.connect(socket);
-
-    socket.on('join', username => {
-        player.username = username;
-    });
+    Player.connect(socket);
 
     // when the server recieves a chat message, emit that message back to ALL other users
     socket.on('sendChatMessage', message => {
@@ -82,7 +78,7 @@ setInterval(() => {
         // get the user's socket
         let socket = socketList[sid];
         // tell each user that the positions changed, and give each client the array of positions so they can see other users
-        socket.emit('positionChanged', { id: sid, players: players, bullets: bullets } );
+        socket.emit('draw', { id: sid, players: players, bullets: bullets } );
     }
 
 }, 1000 / 60);

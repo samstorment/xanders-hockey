@@ -25,8 +25,8 @@ socket.on('getId', id => {
     myId = id;
 });
 
-// do this when the server tells us the position changed
-socket.on('positionChanged', data => {
+// this is our frame by frame draw function
+socket.on('draw', data => {
 
     let clientPlayer;
     // make opposing players red
@@ -39,7 +39,7 @@ socket.on('positionChanged', data => {
     for (let i = 0; i < data.players.length; i++) {
         // draw every player that isnt the client player - we do != instead of !=== because there is a string conversion somewhere
         if (data.players[i].id != data.id) {
-            context.fillRect(data.players[i].x, data.players[i].y, 20, 20);
+            context.fillRect(data.players[i].x, data.players[i].y, data.players[i].w, data.players[i].h);
             context.fillText(data.players[i].username, data.players[i].x, data.players[i].y);
         } else {
             clientPlayer = data.players[i];
@@ -47,30 +47,29 @@ socket.on('positionChanged', data => {
     }
     // draw everyone as blue from their own perspective
     context.fillStyle = 'blue';
-    context.fillRect(clientPlayer.x, clientPlayer.y, 20, 20);
+    context.fillRect(clientPlayer.x, clientPlayer.y, clientPlayer.w, clientPlayer.h);
     context.fillText(clientPlayer.username, clientPlayer.x, clientPlayer.y);
 
     context.fillStyle = 'yellow';
     // draw all the bullets
     for (let i = 0; i < data.bullets.length; i++) {
-        context.fillRect(data.bullets[i].x - 3, data.bullets[i].y - 3, 6, 6);
+        context.fillRect(data.bullets[i].x, data.bullets[i].y, data.bullets[i].w, data.bullets[i].h);
     }
-
 });
+
+
 
 // look at each of the controls the server sent us and setup emits for when each key is pressed/released
 socket.on('setControls', controls => {
     for (let i in controls) {
         let key = getKey(controls[i]);
+        // currently we can type wasd even before joining and it will move the player - this is bad
         key.press = () => { socket.emit('keyPressed', key.value); }
         key.release = () => { socket.emit('keyReleased', key.value); }
     }
 });
 
-
 let shooting = false;
-let currentX = 0;
-let currentY = 0;
 canvas.addEventListener('mousedown', event => {
     shooting = true;
     shoot(event);
@@ -89,8 +88,6 @@ canvas.addEventListener('mouseup', () => {
 
 function shoot(event) {
     let { mouseX, mouseY } = getMouse(event, canvas);
-    currentX = mouseX;
-    currentY = mouseY;
     socket.emit('shoot', { 
         x: mouseX,
         y: mouseY,

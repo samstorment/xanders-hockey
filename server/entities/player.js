@@ -1,5 +1,6 @@
 const Entity = require('./entity.js');
 const Bullet = require('./bullet.js');
+const Rectangle = require('../shapes/rectangle.js');
 
 class Player extends Entity {
 
@@ -7,27 +8,31 @@ class Player extends Entity {
     static list = {};
 
     // any player that just connects gets placed at position (30, 30)
-    constructor(id) {
-        super();
+    constructor(id, x=250, y=250, w=50, h=50) {
+        super(x, y);
         this.id = id;
-        this.x = 30;
-        this.y = 30;
         this.maxSpeed = 8;
         this.setControls();
         this.username = '';
+        this.hitbox = new Rectangle(x, y, w, h);
         Player.list[id] = this;    // insert the currently created player into the list of all players
     }
 
     updatePosition() {
         super.updatePosition();
+        this.hitbox.x = this.x;
+        this.hitbox.y = this.y;
         this.shoot();
     }
 
     shoot() {
         if (this.shooting) {
             let bullet = new Bullet(this, this.shotAngle);
-            bullet.x = this.x;
-            bullet.y = this.y;
+            // set the bullet's player list to the current player list - this seems kinda hacky and bad but requiring Player in bullet.js caused problems
+            bullet.playerList = Player.list;
+            let {x, y} = this.hitbox.center();
+            bullet.x = x;
+            bullet.y = y;
         }
     }
 
@@ -92,6 +97,11 @@ class Player extends Entity {
         // tell the client their id
         socket.emit('getId', socket.id);
 
+        // sets the player's username when they click the join button
+        socket.on('join', username => {
+            player.username = username;
+        });
+
         // when client emits keyPressed, set the specific player key to down
         socket.on('keyPressed', key => {
             player.controls[key].isDown = true;
@@ -108,13 +118,12 @@ class Player extends Entity {
         socket.on('shoot', mouse => {
             player.shooting = mouse.shooting;
             if (mouse.shooting) {
-                let x = -1 * player.x + mouse.x;
-                let y = -1 * player.y + mouse.y;
+                let {x, y} = player.hitbox.center();
+                x = -1 * x + mouse.x;
+                y = -1 * y + mouse.y;
                 player.shotAngle = Math.atan2(y, x) / Math.PI * 180;
             }
         });
-
-        return player;
     }
 
     // delete the player with the corresponding socket id when they dc
@@ -141,8 +150,10 @@ class Player extends Entity {
             data.push({
                 id: player.id,
                 username: player.username,
-                x: player.x,
-                y: player.y
+                x: player.hitbox.x,
+                y: player.hitbox.y,
+                w: player.hitbox.w,
+                h: player.hitbox.h
             });
         }
         // After pushing all player data, return the data so we can emit it to the client
