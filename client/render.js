@@ -39,8 +39,14 @@ socket.on('draw', data => {
     for (let i = 0; i < data.players.length; i++) {
         // draw every player that isnt the client player - we do != instead of !=== because there is a string conversion somewhere
         if (data.players[i].id != data.id) {
+            // draw the player and their username
             context.fillRect(data.players[i].x, data.players[i].y, data.players[i].w, data.players[i].h);
             context.fillText(data.players[i].username, data.players[i].x, data.players[i].y);
+            // draw the full red healthbar
+            context.fillRect(data.players[i].x, data.players[i].y - 30, data.players[i].maxHp, 10);
+            // draw the green current hp
+            context.fillStyle = 'green';
+            context.fillRect(data.players[i].x, data.players[i].y - 30, data.players[i].hp, 10);
         } else {
             clientPlayer = data.players[i];
         }
@@ -49,6 +55,14 @@ socket.on('draw', data => {
     context.fillStyle = 'blue';
     context.fillRect(clientPlayer.x, clientPlayer.y, clientPlayer.w, clientPlayer.h);
     context.fillText(clientPlayer.username, clientPlayer.x, clientPlayer.y);
+    // draw the clients health
+    context.fillStyle = 'red';
+    context.fillRect(clientPlayer.x, clientPlayer.y - 30, clientPlayer.maxHp, 10);
+    context.fillStyle = 'green';
+    context.fillRect(clientPlayer.x, clientPlayer.y - 30, clientPlayer.hp, 10);
+    // draw the client's score
+    context.font = '40px Arial';
+    context.fillText(clientPlayer.score, 400, 40);
 
     
     // draw all the bullets

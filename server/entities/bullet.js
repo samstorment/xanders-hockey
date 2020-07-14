@@ -44,6 +44,14 @@ class Bullet extends Entity {
                 // make sure the colliding player is not the parent player
                 if (checkCollision(bullet, player) && player.id !== bullet.parent.id) {
                     collided = true;
+                    // reduce the hp of the player we hit by 1
+                    player.hp--;
+                    bullet.parent.score++;
+                    // if the player's hp is 0, respawn them with full health
+                    if (player.hp === 0) {
+                        player.setPosition(50, 50);
+                        player.hp = player.maxHp;
+                    }
                     // remove this bullet from the array
                     Bullet.bullets.splice(b, 1);
                 } 

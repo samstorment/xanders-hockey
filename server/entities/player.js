@@ -12,6 +12,9 @@ class Player extends Entity {
         this.maxSpeed = 8;
         this.setControls();
         this.username = '';
+        this.hp = 50;
+        this.maxHp = 50;
+        this.score = 0;
         this.hitbox = new Rectangle(x, y, w, h);
         Player.players[id] = this;    // insert the currently created player into the list of all players
     }
@@ -30,6 +33,13 @@ class Player extends Entity {
             bullet.x = x;
             bullet.y = y;
         }
+    }
+
+    setPosition(x, y) {
+        this.x = x;
+        this.y = y;
+        this.hitbox.x = x;
+        this.hitbox.y = y;
     }
 
     // This is where we define the keys that do something. Be sure that these are valid event.key names
@@ -149,7 +159,10 @@ class Player extends Entity {
                 x: player.hitbox.x,
                 y: player.hitbox.y,
                 w: player.hitbox.w,
-                h: player.hitbox.h
+                h: player.hitbox.h,
+                hp: player.hp,
+                maxHp: player.maxHp,
+                score: player.score
             });
         }
         // After pushing all player data, return the data so we can emit it to the client
