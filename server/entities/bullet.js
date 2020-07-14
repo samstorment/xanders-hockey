@@ -4,7 +4,6 @@ const checkCollision = require('../collision/collision.js');
 
 class Bullet extends Entity {
     
-    static list = [];
     static id = 0;
 
     constructor(parent, angle) {
@@ -16,7 +15,7 @@ class Bullet extends Entity {
         this.timer = 0;
         this.hitbox = new Rectangle(0, 0, 5, 5);
         this.color = 'yellow';
-        Bullet.list.push(this);   
+        Bullet.bullets.push(this);   
     }
 
     // update the bullet's position and remove the first bullet in the list after a while
@@ -25,7 +24,7 @@ class Bullet extends Entity {
         this.hitbox.x = this.x;
         this.hitbox.y = this.y;
         if (this.timer++ > 100) {
-            Bullet.list.shift();
+            Bullet.bullets.shift();
         }
     }
 
@@ -33,21 +32,20 @@ class Bullet extends Entity {
         let data = [];
 
         // loop through every bullet in the bullet list and update that bullets position
-        for (let b in Bullet.list) {
+        for (let b in Bullet.bullets) {
 
             let collided = false;
-            let bullet = Bullet.list[b];
+            let bullet = Bullet.bullets[b];
             bullet.updatePosition();
 
             // for every bullet, loop through the list of all players and check to see if the bullet is colliding with a player
-            let plist = bullet.playerList;
-            for (let p in plist) {
-                let player = plist[p];
+            for (let p in Entity.players) {
+                let player = Entity.players[p];
                 // make sure the colliding player is not the parent player
                 if (checkCollision(bullet, player) && player.id !== bullet.parent.id) {
                     collided = true;
                     // remove this bullet from the array
-                    Bullet.list.splice(b, 1);
+                    Bullet.bullets.splice(b, 1);
                 } 
             }
 

@@ -4,8 +4,6 @@ const Rectangle = require('../shapes/rectangle.js');
 
 class Player extends Entity {
 
-    // stores all players currently in the game. STATIC methods/variables can be accessed without instantiation
-    static list = {};
 
     // any player that just connects gets placed at position (30, 30)
     constructor(id, x=250, y=250, w=50, h=50) {
@@ -15,7 +13,7 @@ class Player extends Entity {
         this.setControls();
         this.username = '';
         this.hitbox = new Rectangle(x, y, w, h);
-        Player.list[id] = this;    // insert the currently created player into the list of all players
+        Player.players[id] = this;    // insert the currently created player into the list of all players
     }
 
     updatePosition() {
@@ -28,8 +26,6 @@ class Player extends Entity {
     shoot() {
         if (this.shooting) {
             let bullet = new Bullet(this, this.shotAngle);
-            // set the bullet's player list to the current player list - this seems kinda hacky and bad but requiring Player in bullet.js caused problems
-            bullet.playerList = Player.list;
             let {x, y} = this.hitbox.center();
             bullet.x = x;
             bullet.y = y;
@@ -129,7 +125,7 @@ class Player extends Entity {
     // delete the player with the corresponding socket id when they dc
     static disconnect(socket) {
         console.log(`Player ${socket.id} disconnected`);
-        delete Player.list[socket.id];
+        delete Player.players[socket.id];
     }
 
     // call this function every draw frame
@@ -138,10 +134,10 @@ class Player extends Entity {
         let data = [];
 
         // look at every player in the list of connected players
-        for (let p in Player.list) {
+        for (let p in Player.players) {
 
             // get the current player
-            let player = Player.list[p];
+            let player = Player.players[p];
 
             // update current player's position
             player.updatePosition();

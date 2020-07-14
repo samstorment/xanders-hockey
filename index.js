@@ -8,6 +8,7 @@ const path = require('path');
 // get the Player class from the player javascript file
 const Player = require('./server/entities/player.js');
 const Bullet = require('./server/entities/bullet.js');
+const Entity = require('./server/entities/entity.js');
 
 // respond to GET request with index.html when client visits the empty route
 app.get('/', (req, res) => {
@@ -39,7 +40,7 @@ io.on('connect', socket => {
     // when the server recieves a chat message, emit that message back to ALL other users
     socket.on('sendChatMessage', message => {
         for (let sid in socketList) {
-            let messageText = `${Player.list[socket.id].username}: ${message}`;
+            let messageText = `${Player.players[socket.id].username}: ${message}`;
             socketList[sid].emit('addChatMessage', { message: messageText, id: socket.id });
         }
     });
