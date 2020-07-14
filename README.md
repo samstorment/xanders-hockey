@@ -27,3 +27,10 @@
 ### `npm install express` for route management
 ### `npm install socket.io` for web socket communication
 
+# Heroku Setup
+### Install the heroku command line interface (CLI) [here](https://devcenter.heroku.com/articles/heroku-cli). Use `heroku` in the terminal to test that it installed correctly. You should get some feedback that is not "command not found". I had to close vs code to and restart to get the integrated terminal to recognize heroku.
+### Move to the directory of your project and run `heroku login` then login to your heroku account to link your CLI to your heroku account.
+### Go to https://dashboard.heroku.com/apps and click `new` in the top right corner, then click `create new app`. Name it something very cool.
+### Link your code to your heroku repository with `git remote add heroku https://git.heroku.com/<heroku-app-name>` where <heroku-app-name> is the name you gave your app in the step above.
+### Run `git add .`, `git commit -m "Heroku setup", `git push heroku master` to push your code to your heroku remote repo. Run `git push origin <branchname>` if you are also connected to a personal repo.
+### Open your app in the browser with `heroku open`.
