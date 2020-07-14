@@ -19,7 +19,7 @@ export function getKey(value) {
             // If the key.press function is defined, call it. 
             // Putting this function here ensures that press only gets called once on the initial key press
             if (key.press) { key.press(); }
-        }
+        } 
     };
 
     let upHandler = event => {

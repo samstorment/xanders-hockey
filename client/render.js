@@ -79,11 +79,15 @@ socket.on('setControls', controls => {
     for (let i in controls) {
         let key = getKey(controls[i]);
         // currently we can type wasd even before joining and it will move the player - this is bad
-        key.press = () => { socket.emit('keyPressed', key.value); }
+        key.press = () => { 
+            socket.emit('keyPressed', key.value);
+        }
         key.release = () => { socket.emit('keyReleased', key.value); }
     }
 });
 
+let currentX = 0;
+let currentY = 0;
 let shooting = false;
 canvas.addEventListener('mousedown', event => {
     shooting = true;
@@ -103,6 +107,8 @@ canvas.addEventListener('mouseup', () => {
 
 function shoot(event) {
     let { mouseX, mouseY } = getMouse(event, canvas);
+    currentX = mouseX;
+    currentY = mouseY;
     socket.emit('shoot', { 
         x: mouseX,
         y: mouseY,

@@ -18,8 +18,8 @@ app.get('/', (req, res) => {
 // indicate that the client folder contains static content -- if we don't do this our css/javascript in the client folder won't work
 app.use(express.static(path.join(__dirname, 'client')));
 
-// listen for client requests on port 3000
-const port = 3000;
+// listen for client requests on port 3000, process.env.PORT for heroku
+const port = process.env.PORT || 3000;
 server.listen(port, () => console.log(`Listening on port: ${port}`));
 
 // save all the sockets in this list by their socket id

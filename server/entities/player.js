@@ -28,8 +28,12 @@ class Player extends Entity {
 
     shoot() {
         if (this.shooting) {
-            let bullet = new Bullet(this, this.shotAngle);
+            // the bullet shoots from the center of the player
             let {x, y} = this.hitbox.center();
+            let shotX = -1 * x + this.mouseX;
+            let shotY = -1 * y + this.mouseY;
+            let shotAngle = Math.atan2(shotY, shotX) / Math.PI * 180;
+            let bullet = new Bullet(this, shotAngle);
             bullet.x = x;
             bullet.y = y;
         }
@@ -124,10 +128,8 @@ class Player extends Entity {
         socket.on('shoot', mouse => {
             player.shooting = mouse.shooting;
             if (mouse.shooting) {
-                let {x, y} = player.hitbox.center();
-                x = -1 * x + mouse.x;
-                y = -1 * y + mouse.y;
-                player.shotAngle = Math.atan2(y, x) / Math.PI * 180;
+                player.mouseX = mouse.x;
+                player.mouseY = mouse.y;
             }
         });
     }
