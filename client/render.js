@@ -1,16 +1,19 @@
 import { getKey } from './utils.js';
 import { getMouse } from './utils.js';
 
-
 let canvas = document.querySelector('#canvas');
 let context = canvas.getContext('2d');
 canvas.width = 500;
 canvas.height = 500;
 
+let background = new Image();
+background.src = './sprites/rust.jpg';
 
+// handle user joining
 let joinButton = document.querySelector('#join-button');
 let username = document.querySelector('#username');
 joinButton.addEventListener('click', () => {
+    // tell the server the client's username, then transition scenes
     socket.emit('join', username.value);
     document.querySelector('#join-container').style.display = 'none';
     document.querySelector('#game-container').style.display = 'flex';
@@ -34,6 +37,9 @@ socket.on('draw', data => {
     context.font = '15px Arial';
     // clear the canvas each time we draw so we don't duplicate players. remove this line to see the effect
     context.clearRect(0, 0, canvas.width, canvas.height);
+
+    // draw the background
+    context.drawImage(background, 0, 0, background.width, background.height, 0, 0, 500, 500);
 
     // look at each position in the array and draw a red square at that posiiton - this will enable every user to see their self and every other user
     for (let i = 0; i < data.players.length; i++) {
@@ -79,15 +85,11 @@ socket.on('setControls', controls => {
     for (let i in controls) {
         let key = getKey(controls[i]);
         // currently we can type wasd even before joining and it will move the player - this is bad
-        key.press = () => { 
-            socket.emit('keyPressed', key.value);
-        }
+        key.press = () => { socket.emit('keyPressed', key.value); }
         key.release = () => { socket.emit('keyReleased', key.value); }
     }
 });
 
-let currentX = 0;
-let currentY = 0;
 let shooting = false;
 canvas.addEventListener('mousedown', event => {
     shooting = true;
@@ -107,8 +109,6 @@ canvas.addEventListener('mouseup', () => {
 
 function shoot(event) {
     let { mouseX, mouseY } = getMouse(event, canvas);
-    currentX = mouseX;
-    currentY = mouseY;
     socket.emit('shoot', { 
         x: mouseX,
         y: mouseY,
